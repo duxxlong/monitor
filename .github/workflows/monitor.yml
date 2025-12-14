@@ -1,9 +1,9 @@
 name: 域名监控
 
 on:
-  # 每小时执行一次
+  # 每天中午12点执行一次 (北京时间)
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 4 * * *'
   # 支持手动触发
   workflow_dispatch:
 
