@@ -1,0 +1,34 @@
+name: 域名监控
+
+on:
+  # 每小时执行一次
+  schedule:
+    - cron: '0 * * * *'
+  # 支持手动触发
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+      
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 安装 whois
+        run: sudo apt-get update && sudo apt-get install -y whois
+      
+      - name: 运行监控脚本
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
+          WATCHLIST_FILE: watchlist.txt
+        run: python monitor_domains.py
